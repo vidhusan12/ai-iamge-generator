@@ -1,23 +1,56 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [prompt, setPrompt] = useState(''); // To Store the user text
+  const [image, setImage] = useState('');  // To Store the AI generated Img
+  const [loading, setLoading] = useState(false);
+
+
+  async function handleSubmit() {
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setImage(data.image);
+
+    } catch (error) {
+      console.error("Error generating image:", error);
+      alert("Failed to generate image. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header className='App-header'>
+        <h1>AI Image Generator</h1>
+        <div className="input-container">
+          <input
+            type='text'
+            placeholder='Enter a prompt...'
+          />
+          <button>Generate Image</button>
+        </div>
+        <div className="image-container"></div>
       </header>
+
     </div>
   );
 }
