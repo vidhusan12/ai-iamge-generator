@@ -45,10 +45,17 @@ function App() {
           <input
             type='text'
             placeholder='Enter a prompt...'
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)} // updated everytime the user type
           />
-          <button>Generate Image</button>
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Generating...' : 'Generate Image'}
+          </button>
         </div>
-        <div className="image-container"></div>
+        <div className="image-container">
+          {loading && <div className='spinner'></div>}
+          {image && <img src={`data:image/png;base64,${image}`} alt="Generated" />}
+        </div>
       </header>
 
     </div>
